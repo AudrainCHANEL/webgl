@@ -70,3 +70,9 @@ function handleMouseMove(event) {
 	lastMouseX = newX
 	lastMouseY = newY;
 }
+
+// =====================================================
+function seuillage(seuil) {
+
+	document.getElementById("seuil_value").innerHTML=seuil;
+}

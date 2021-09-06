@@ -12,6 +12,7 @@ mat4.identity(objMatrix);
 
 var texture = new Array(8);
 
+var seuil = 0.0;
 
 // =====================================================
 function webGLStart() {
@@ -24,8 +25,8 @@ function webGLStart() {
 
 	initBuffers();
 
-	initTexture('cerf256.jpg', 0);
-	initTexture('saucisson256.jpg', 1);
+	initTexture('cerveau.jpeg', 0);
+	initTexture('radio.jfif', 1);
 
 	loadShaders('shader');
 
@@ -175,6 +176,9 @@ function initShaders(vShaderTxt, fShaderTxt) {
 	
 	shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
 	shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+
+	shaderProgram.opacite = gl.getUniformLocation(shaderProgram, "uSeuil");
+	gl.uniform1f(shaderProgram.opacite, seuil);
 	
 	gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute,

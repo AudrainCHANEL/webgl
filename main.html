@@ -11,5 +11,13 @@
 
 	<body onload="webGLStart();">
 		<canvas id="WebGL-test" style="border:none;" width="600" height="600"></canvas>
+
+		<div class="sliderseuil">
+			<!--interface transparence : slider pour modifier la transparence-->
+		<b>Gestion du seuil : </b>
+		<p> Seuil = <span id = "seuil_value"> 0 </span> </p>
+		<input class="slider" type="range" min="0" max="1" step="0.1" value = "0" oninput="seuillage(this.value);">
+		</div>
+
 	</body>
 </html>
