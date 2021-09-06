@@ -200,6 +200,7 @@ function setMatrixUniforms() {
 	if(shaderProgram != null) {
 		gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
 		gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+		gl.uniform1f(shaderProgram.opacite, seuil);
 	}
 }
 
