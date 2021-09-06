@@ -72,7 +72,7 @@ function handleMouseMove(event) {
 }
 
 // =====================================================
-function seuillage(seuil) {
-
-	document.getElementById("seuil_value").innerHTML=seuil;
+function seuillage(seuil_curseur) {
+	document.getElementById("seuil_value").innerHTML=seuil_curseur;
+	seuil = seuil_curseur;
 }
