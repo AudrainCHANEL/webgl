@@ -1,3 +1,5 @@
+var dernierIndex = 6;
+var premierIndex = 1;
 // =====================================================
 var gl;
 var shadersLoaded = 0;
@@ -10,7 +12,7 @@ var pMatrix = mat4.create();
 var objMatrix = mat4.create();
 mat4.identity(objMatrix);
 
-var texture = new Array(8);
+var texture = null;
 
 var seuil = 0.0;
 
@@ -25,8 +27,10 @@ function webGLStart() {
 
 	initBuffers();
 
-	initTexture('cerveau.jpeg', 0);
-	initTexture('radio.jfif', 1);
+	texture = new Array(dernierIndex-premierIndex);
+	for (let index=0 ; index <= (dernierIndex-premierIndex+1) ; index ++) {
+		initTexture('./ScanBW/scan'+(premierIndex+index)+'.jpg', index);
+	}
 
 	loadShaders('shader');
 
@@ -45,6 +49,7 @@ function initGL(canvas)
 		gl.viewportWidth = canvas.width;//taille du canvas
 		gl.viewportHeight = canvas.height;
 		gl.viewport(0, 0, canvas.width, canvas.height);//Pour dire où on veut dessiner, et donc on peut le découper
+		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);//###
 	} catch (e) {}
 	if (!gl) {
@@ -202,72 +207,22 @@ function setMatrixUniforms() {
 // =====================================================
 function drawScene() {
 	gl.clear(gl.COLOR_BUFFER_BIT);
-	
-	
-	/* Version multicouche*/
 
-	/*nbcouche = 3
+	nbcouche = dernierIndex-premierIndex;
 	espace = 2/nbcouche
 	if(shaderProgram != null) {
-		for (let couche=-1 ; couche<1 ; couche+=espace) {
+		for (let index=0 ; index <= nbcouche ; index++) {
 			mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 			mat4.identity(mvMatrix);
 			mat4.translate(mvMatrix, [0.0, 0.0, -3.0]);
 			mat4.multiply(mvMatrix, objMatrix);
-			mat4.translate(mvMatrix, [0.0, 0.0, couche])
+			mat4.translate(mvMatrix, [0.0, 0.0, index*espace-1])
 
 			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-			gl.bindTexture(gl.TEXTURE_2D, 0);
-			//gl.activeTexture(gl.TEXTURE0);
+			gl.bindTexture(gl.TEXTURE_2D, texture[index]);
 			setMatrixUniforms();
 			gl.drawElements(gl.TRIANGLE_FAN, indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 		}
-	}*/
-
-	//Do by Marina
-	/*mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
-	mat4.identity(mvMatrix);
-	mat4.translate(mvMatrix, [0.0, 0.0, -3.0]);
-	mat4.multiply(mvMatrix, objMatrix);
-	//mat4.translate(mvMatrix, [0.0, 0.0, couche])
-
-	gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-	setMatrixUniforms();
-	gl.bindTexture(gl.TEXTURE_2D, texture1);
-	gl.drawElements(gl.TRIANGLE_FAN, indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);*/
-
-
-	/*Version Bicouche*/
-
-	if(shaderProgram != null) {
-		//OBJET 1
-		mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
-		mat4.identity(mvMatrix);
-		mat4.translate(mvMatrix, [0.0, 0.0, -3.0]);
-		mat4.multiply(mvMatrix, objMatrix);
-		mat4.translate(mvMatrix, [0.0, 0.0, 0.2])
-
-		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-		gl.bindTexture(gl.TEXTURE_2D, texture[0]);
-		setMatrixUniforms();
-		gl.drawElements(gl.TRIANGLE_FAN, indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
-
-
-		//OBJET 1
-		mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
-		mat4.identity(mvMatrix);
-		mat4.translate(mvMatrix, [0.0, 0.0, -3.0]);
-		mat4.multiply(mvMatrix, objMatrix);
-		mat4.translate(mvMatrix, [0.0, 0.0, -0.2])
-
-		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-		gl.bindTexture(gl.TEXTURE_2D, texture[1]);
-		setMatrixUniforms();
-		gl.drawElements(gl.TRIANGLE_FAN, indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 	}
-
 }
