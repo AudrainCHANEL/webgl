@@ -21,7 +21,7 @@ function webGLStart() {
 
 	initGL(canvas);
 	initBuffers(); //chargement de la geometrie (plusieurs fois dans le code)
-	initTexture('cerf256.jpg'); //chargement de la texture  (qq fois mais pas à chaque changement)
+	initTexture('radio.jfif'); //chargement de la texture  (qq fois mais pas à chaque changement)
 	loadShaders('shader');
 
 	gl.clearColor(0.7, 0.7, 0.7, 1.0); //couleur de remplissage quand l'image est réinitialisée
@@ -39,6 +39,11 @@ function initGL(canvas)
 		gl.viewportWidth = canvas.width;//taille du canvas
 		gl.viewportHeight = canvas.height;
 		gl.viewport(0, 0, canvas.width, canvas.height);//Pour dire où on veut dessiner, et donc on peut le découper
+		
+		// Enable blending
+		gl.enable(gl.BLEND);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	
 	} catch (e) {}
 	if (!gl) {
 		console.log("Could not initialise WebGL");
@@ -167,7 +172,7 @@ function initShaders(vShaderTxt, fShaderTxt) {
 	gl.enableVertexAttribArray(shaderProgram.texCoordsAttribute);
 	
 	shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
-	
+
 	shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
 	shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 	
