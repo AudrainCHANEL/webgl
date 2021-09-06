@@ -10,6 +10,7 @@ var pMatrix = mat4.create();
 var objMatrix = mat4.create();
 mat4.identity(objMatrix);
 
+var texture = new Array(8);
 
 
 // =====================================================
@@ -20,8 +21,12 @@ function webGLStart() {
 	document.onmousemove = handleMouseMove;
 
 	initGL(canvas);
-	initBuffers(); //chargement de la geometrie (plusieurs fois dans le code)
-	initTexture('radio.jfif'); //chargement de la texture  (qq fois mais pas à chaque changement)
+
+	initBuffers();
+
+	initTexture('cerf256.jpg', 0);
+	initTexture('saucisson256.jpg', 1);
+
 	loadShaders('shader');
 
 	gl.clearColor(0.7, 0.7, 0.7, 1.0); //couleur de remplissage quand l'image est réinitialisée
@@ -39,11 +44,7 @@ function initGL(canvas)
 		gl.viewportWidth = canvas.width;//taille du canvas
 		gl.viewportHeight = canvas.height;
 		gl.viewport(0, 0, canvas.width, canvas.height);//Pour dire où on veut dessiner, et donc on peut le découper
-		
-		// Enable blending
-		gl.enable(gl.BLEND);
-		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);//###
 	} catch (e) {}
 	if (!gl) {
 		console.log("Could not initialise WebGL");
@@ -80,7 +81,7 @@ function initBuffers() {
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoords), gl.STATIC_DRAW);
 	texCoordBuffer.itemSize = 2;
 	texCoordBuffer.numItems = 4;
-	
+
 	// Index buffer (array)
 	var indices = [ 0, 1, 2, 3];
 	indexBuffer = gl.createBuffer();
@@ -90,20 +91,19 @@ function initBuffers() {
 	indexBuffer.numItems = indices.length;
 }
 
-
 // =====================================================
-function initTexture(texturefilename)
+function initTexture(textureFileName, index)
 {
 	var texImage = new Image();
-	texImage.src = texturefilename;
+	texImage.src = textureFileName;
 
-	texture = gl.createTexture();//Creation et recuperation d'id
-	texture.image = texImage;
+	texture[index] = gl.createTexture();//Creation et recuperation d'id
+	texture[index].image = texImage;
 
 	texImage.onload = function () {//On traite la lecture
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-		gl.bindTexture(gl.TEXTURE_2D, texture);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image); //j'envoie l'image sur la carte graphique
+		gl.bindTexture(gl.TEXTURE_2D, texture[index]);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture[index].image); //j'envoie l'image sur la carte graphique
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR); //Pour l'interpolation (pck les pixels de la texture ne tombent jamais parafitement sur les pixels de la forme)
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); //peut aussi etre gl.NEAREST au lieu de gl.LINEAR
 		gl.uniform1i(shaderProgram.samplerUniform, 0); //Utilisation d'un sampleur pour acceder au pixel de la texture
@@ -172,7 +172,7 @@ function initShaders(vShaderTxt, fShaderTxt) {
 	gl.enableVertexAttribArray(shaderProgram.texCoordsAttribute);
 	
 	shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
-
+	
 	shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
 	shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 	
@@ -183,7 +183,6 @@ function initShaders(vShaderTxt, fShaderTxt) {
 	gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
 	gl.vertexAttribPointer(shaderProgram.texCoordsAttribute,
       	texCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
 }
 
 
@@ -198,11 +197,13 @@ function setMatrixUniforms() {
 
 // =====================================================
 function drawScene() {
-	nbcouche = 3
-	espace = 2/nbcouche
-
 	gl.clear(gl.COLOR_BUFFER_BIT);
+	
+	
+	/* Version multicouche*/
 
+	/*nbcouche = 3
+	espace = 2/nbcouche
 	if(shaderProgram != null) {
 		for (let couche=-1 ; couche<1 ; couche+=espace) {
 			mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
@@ -213,9 +214,56 @@ function drawScene() {
 
 			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+			gl.bindTexture(gl.TEXTURE_2D, 0);
+			//gl.activeTexture(gl.TEXTURE0);
 			setMatrixUniforms();
 			gl.drawElements(gl.TRIANGLE_FAN, indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
-			//commentaire
 		}
+	}*/
+
+	//Do by Marina
+	/*mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+	mat4.identity(mvMatrix);
+	mat4.translate(mvMatrix, [0.0, 0.0, -3.0]);
+	mat4.multiply(mvMatrix, objMatrix);
+	//mat4.translate(mvMatrix, [0.0, 0.0, couche])
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+	setMatrixUniforms();
+	gl.bindTexture(gl.TEXTURE_2D, texture1);
+	gl.drawElements(gl.TRIANGLE_FAN, indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);*/
+
+
+	/*Version Bicouche*/
+
+	if(shaderProgram != null) {
+		//OBJET 1
+		mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+		mat4.identity(mvMatrix);
+		mat4.translate(mvMatrix, [0.0, 0.0, -3.0]);
+		mat4.multiply(mvMatrix, objMatrix);
+		mat4.translate(mvMatrix, [0.0, 0.0, 0.2])
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bindTexture(gl.TEXTURE_2D, texture[0]);
+		setMatrixUniforms();
+		gl.drawElements(gl.TRIANGLE_FAN, indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+
+
+		//OBJET 1
+		mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+		mat4.identity(mvMatrix);
+		mat4.translate(mvMatrix, [0.0, 0.0, -3.0]);
+		mat4.multiply(mvMatrix, objMatrix);
+		mat4.translate(mvMatrix, [0.0, 0.0, -0.2])
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+		gl.bindTexture(gl.TEXTURE_2D, texture[1]);
+		setMatrixUniforms();
+		gl.drawElements(gl.TRIANGLE_FAN, indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 	}
+
 }
