@@ -1,5 +1,5 @@
-var dernierIndex = 6;
-var premierIndex = 1;
+var dernierIndex = 360;
+var premierIndex = 0;
 // =====================================================
 var gl;
 var shadersLoaded = 0;
@@ -29,7 +29,7 @@ function webGLStart() {
 
 	texture = new Array(dernierIndex-premierIndex);
 	for (let index=0 ; index <= (dernierIndex-premierIndex+1) ; index ++) {
-		initTexture('./ScanBW/scan'+(premierIndex+index)+'.jpg', index);
+		initTexture('./Scan300/scan'+(premierIndex+index)+'.jpg', index);
 	}
 
 	loadShaders('shader');
@@ -210,14 +210,14 @@ function drawScene() {
 	gl.clear(gl.COLOR_BUFFER_BIT);
 
 	nbcouche = dernierIndex-premierIndex;
-	espace = 2/nbcouche
+	espace = 0.6/nbcouche
 	if(shaderProgram != null) {
 		for (let index=0 ; index <= nbcouche ; index++) {
 			mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 			mat4.identity(mvMatrix);
 			mat4.translate(mvMatrix, [0.0, 0.0, -3.0]);
 			mat4.multiply(mvMatrix, objMatrix);
-			mat4.translate(mvMatrix, [0.0, 0.0, index*espace-1])
+			mat4.translate(mvMatrix, [0.0, 0.0, index*espace-0.3])
 
 			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
