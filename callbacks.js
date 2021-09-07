@@ -72,7 +72,13 @@ function handleMouseMove(event) {
 }
 
 // =====================================================
-function seuillage(seuil_curseur) {
-	document.getElementById("seuil_value").innerHTML=seuil_curseur;
-	seuil = seuil_curseur;
+function seuillage(seuil_curseur, borne) {
+	if (borne == 'inf') {
+		document.getElementById("inf_value").innerHTML=seuil_curseur;
+		seuil_inf = seuil_curseur;
+	}
+	else {
+		document.getElementById("sup_value").innerHTML=seuil_curseur;
+		seuil_sup = seuil_curseur;
+	}
 }

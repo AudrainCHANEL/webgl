@@ -14,7 +14,8 @@ mat4.identity(objMatrix);
 
 var texture = null;
 
-var seuil = 0.0;
+var seuil_inf = 0.9;
+var seuil_sup = 1.0;
 
 // =====================================================
 function webGLStart() {
@@ -182,8 +183,11 @@ function initShaders(vShaderTxt, fShaderTxt) {
 	shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
 	shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 
-	shaderProgram.opacite = gl.getUniformLocation(shaderProgram, "uSeuil");
-	gl.uniform1f(shaderProgram.opacite, seuil);
+	shaderProgram.opaciteinf = gl.getUniformLocation(shaderProgram, "uSeuilMin");
+	gl.uniform1f(shaderProgram.opaciteinf, seuil_inf);
+
+	shaderProgram.opacitesup = gl.getUniformLocation(shaderProgram, "uSeuilMax");
+	gl.uniform1f(shaderProgram.opacitesup, seuil_sup);
 	
 	gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute,
@@ -200,7 +204,8 @@ function setMatrixUniforms() {
 	if(shaderProgram != null) {
 		gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
 		gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
-		gl.uniform1f(shaderProgram.opacite, seuil);
+		gl.uniform1f(shaderProgram.opaciteinf, seuil_inf);
+		gl.uniform1f(shaderProgram.opacitesup, seuil_sup);
 	}
 }
 
