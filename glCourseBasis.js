@@ -1,4 +1,5 @@
 var dernierIndex = 360;
+var nbcouche= 361;
 var premierIndex = 0;
 // =====================================================
 var gl;
@@ -16,6 +17,7 @@ var texture = null;
 
 var seuil_inf = 0.9;
 var seuil_sup = 1.0;
+var lut=getLUT();
 
 // =====================================================
 function webGLStart() {
@@ -28,7 +30,7 @@ function webGLStart() {
 
 	initBuffers();
 
-	texture = new Array(dernierIndex-premierIndex);
+	texture = new Array(nbcouche);
 	for (let index=0 ; index <= (dernierIndex-premierIndex+1) ; index ++) {
 		initTexture('./Scan300/scan'+(premierIndex+index)+'.jpg', index);
 	}
@@ -189,6 +191,9 @@ function initShaders(vShaderTxt, fShaderTxt) {
 	shaderProgram.opacitesup = gl.getUniformLocation(shaderProgram, "uSeuilMax");
 	gl.uniform1f(shaderProgram.opacitesup, seuil_sup);
 	
+	shaderProgram.lut = gl.getUniformLocation(shaderProgram, "uLUT");
+	gl.uniform3fv(shaderProgram.lut, lut);
+
 	gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute,
      	vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -209,20 +214,25 @@ function setMatrixUniforms() {
 	}
 }
 
+// =====================================================
+function getLUT() {
+	spot = [0.3, 0.5, 0.8];
+	return spot;
+}
+
 
 // =====================================================
 function drawScene() {
 	gl.clear(gl.COLOR_BUFFER_BIT);
 
-	nbcouche = dernierIndex-premierIndex;
 	espace = 0.6/nbcouche
 	if(shaderProgram != null) {
-		for (let index=0 ; index <= nbcouche ; index++) {
+		for (let index=premierIndex ; index <= dernierIndex ; index++) {
 			mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 			mat4.identity(mvMatrix);
 			mat4.translate(mvMatrix, [0.0, 0.0, -3.0]);
 			mat4.multiply(mvMatrix, objMatrix);
-			mat4.translate(mvMatrix, [0.0, 0.0, index*espace-0.3])
+			mat4.translate(mvMatrix, [0.0, 0.0, (index-premierIndex)*espace-0.3])
 
 			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);

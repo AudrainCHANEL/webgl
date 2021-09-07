@@ -82,3 +82,26 @@ function seuillage(seuil_curseur, borne) {
 		seuil_sup = seuil_curseur;
 	}
 }
+
+// =====================================================
+function setLayer(inputvalue){
+	premierIndex=inputvalue;
+	dernierIndex=premierIndex;
+	document.getElementById("change-couche").innerHTML = inputvalue;
+}
+
+// =====================================================
+function changeView(){
+	if (document.getElementById("checkbox-view").checked){
+		premierIndex = document.getElementById("checkbox-view")
+		// document.getElementById("change-couche").display=false;
+		// style("display:none");
+		
+	}
+	else{
+		premierIndex=0;
+		dernierIndex=360;
+		//affichage 3D
+		// document.getElementById("change-couche").style("display:none");
+	}
+}

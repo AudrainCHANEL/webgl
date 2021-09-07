@@ -8,7 +8,7 @@ right: 25%;
 
 .slider {
 -webkit-appearance: none;
-width: 48%;
+width: 600px;
 height: 5px;
 background: #d3d3d3;
 outline: none;
@@ -35,5 +35,9 @@ width: 20px;
 height: 20px;
 background: #7ce6ee;
 cursor: pointer;
+}
+
+.slider-hidden {
+    display: none!important;
 }
 
