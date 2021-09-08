@@ -1,8 +1,8 @@
 // =====================================================
 function seuillage(seuil_curseur) {
     /**Pour changer la valeur du seuil d'intensité */
-	document.getElementById("inf_value").innerHTML=seuil_curseur;
-	seuil_inf = seuil_curseur;
+	document.getElementById("seuil_value").innerHTML=seuil_curseur;
+	seuil = seuil_curseur;
 }
 
 // =====================================================

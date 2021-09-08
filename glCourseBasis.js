@@ -12,14 +12,14 @@ var objMatrix = mat4.create();
 mat4.identity(objMatrix);
 
 /*Les infos sur le jeu de données*/
-var dernierIndex = 360;
-var nbcouche= 360;
-var premierIndex = 0;
+var dernierIndex=360;
+var nbcouche=360;
+var premierIndex=0;
 
 /*Les variables que nous avons rajouté*/
 var texture = null;
-var seuil_inf = 0.9;
-var couleur=1;
+var seuil = 0.9;
+var couleur=0; //0 pour monochromatique et 1 pour fausses couleurs
 
 /*Les LookUp Table pour les fausses couleurs (valeurs par défaut)*/
 var lut1 = [1.0, 0.0, 0.0];
@@ -49,7 +49,7 @@ function webGLStart() {
 	//Chargement des shaders
 	loadShaders('shader');
 
-	gl.clearColor(0.7, 0.7, 0.7, 1.0); //couleur de remplissage quand l'image est réinitialisée
+	gl.clearColor(0.4, 0.4, 0.4, 1.0); //couleur de remplissage quand l'image est réinitialisée
 	gl.enable(gl.DEPTH_TEST);//initialisation de la gestion de la profondeur
 
 //	drawScene();
@@ -200,7 +200,7 @@ function initShaders(vShaderTxt, fShaderTxt) {
 	shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 
 	//On rajoute les 5 LUT, le seui; d'affichage, una variable de selection du mode d'affichage (monochrome ou polychrome)
-	shaderProgram.opaciteinf = gl.getUniformLocation(shaderProgram, "uSeuilMin");
+	shaderProgram.opacite = gl.getUniformLocation(shaderProgram, "uSeuil");
 	shaderProgram.lut1 = gl.getUniformLocation(shaderProgram, "uLut1");
 	shaderProgram.lut2 = gl.getUniformLocation(shaderProgram, "uLut2");
 	shaderProgram.lut3 = gl.getUniformLocation(shaderProgram, "uLut3");
@@ -224,7 +224,7 @@ function setMatrixUniforms() {
 		gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
 		gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 		//On envoie le seuil (float)
-		gl.uniform1f(shaderProgram.opaciteinf, seuil_inf);
+		gl.uniform1f(shaderProgram.opacite, seuil);
 		//On envoie les 5 LUT (5* vec3)
 		gl.uniform3fv(shaderProgram.lut1, lut1);
 		gl.uniform3fv(shaderProgram.lut2, lut2);
