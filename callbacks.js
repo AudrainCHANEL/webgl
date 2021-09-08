@@ -94,11 +94,13 @@ function setLayer(inputvalue){
 function changeView2D(){
 	premierIndex = document.getElementById("change-couche").innerHTML;
 	dernierIndex = premierIndex;
+	document.getElementById("div-change-couche").style.display="block";
 }
 
 function changeView3D(){
 	premierIndex=0;
 	dernierIndex=360;
+	document.getElementById("div-change-couche").style.display="none";
 }
 
 // =====================================================
@@ -106,3 +108,14 @@ function setCouleur(couleur, inputValue){
 
 }
 
+//=====================================================
+function setMonochromatique(inputValue){
+	if(inputValue==1){
+		document.getElementById("div-couleur").style.display="block";
+	}
+	else{
+		document.getElementById("div-couleur").style.display="none";
+	}
+
+	couleur=inputValue;
+}
