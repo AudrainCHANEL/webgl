@@ -5,6 +5,7 @@
 		<!------------------------------------------------------------------->
 		<script type="text/javascript" src="glMatrix.js"></script>
 		<script type="text/javascript" src="callbacks.js"></script>
+		<script type="text/javascript" src="function.js"></script>
 		<script type="text/javascript" src="glCourseBasis.js"></script>
 		<link rel="stylesheet" href="style.css" />
 		<!------------------------------------------------------------------->
@@ -21,7 +22,7 @@
 					<b>Gestion de l'interface : </b>
 					<br><br>
 					<p> Seuil = <span id="inf_value"> 0.9 </span> </p>
-					<input class="slider" type="range" min="0" max="1" step="0.01" value = "0.9" oninput="seuillage(this.value, 'inf');">
+					<input class="slider" type="range" min="0" max="1" step="0.01" value = "0.9" oninput="seuillage(this.value);">
 
 					
 					<!--interface changement de plan -->
