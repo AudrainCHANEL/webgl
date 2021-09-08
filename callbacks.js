@@ -91,17 +91,18 @@ function setLayer(inputvalue){
 }
 
 // =====================================================
-function changeView(){
-	if (document.getElementById("checkbox-view").checked){
-		premierIndex = document.getElementById("checkbox-view")
-		// document.getElementById("change-couche").display=false;
-		// style("display:none");
-		
-	}
-	else{
-		premierIndex=0;
-		dernierIndex=360;
-		//affichage 3D
-		// document.getElementById("change-couche").style("display:none");
-	}
+function changeView2D(){
+	premierIndex = document.getElementById("change-couche").innerHTML;
+	dernierIndex = premierIndex;
 }
+
+function changeView3D(){
+	premierIndex=0;
+	dernierIndex=360;
+}
+
+// =====================================================
+function setCouleur(couleur, inputValue){
+
+}
+

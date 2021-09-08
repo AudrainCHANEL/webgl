@@ -11,18 +11,63 @@
 	</head>
 
 	<body onload="webGLStart();">
-		<canvas id="WebGL-test" style="border:none;" width="600" height="600"></canvas>
-		
-		<div class="sliderseuil">
-			<!--interface transparence : slider pour modifier la transparence-->
-			<b>Gestion du seuil : </b>
-			<p> Borne inférieure = <span id="inf_value"> 0.9 </span> </p>
-			<input class="slider" type="range" min="0" max="1" step="0.01" value = "0.9" oninput="seuillage(this.value, 'inf');">
-			
-			<p> Premiere couche = <span id="change-couche"> 360 </span> </p>
-			<input class="slider" type="range" min="0" max="360" step="1" value="360" oninput="setLayer(this.value);">
-		</div>
+		<table>
+			<td>
+				<canvas id="WebGL-test" style="border:none;" width="600" height="600"></canvas>
+			</td>
+			<td>
+				<div class="interface">
+					<!--interface transparence : slider pour modifier la transparence-->
+					<b>Gestion du seuil : </b>
+					<p> Borne inférieure = <span id="inf_value"> 0.9 </span> </p>
+					<input class="slider" type="range" min="0" max="1" step="0.01" value = "0.9" oninput="seuillage(this.value, 'inf');">
 
-		<input type="checkbox" id="checkbox-view" class="check-vue" onchange="changeView();"> Changer la vue
+					
+					<!--interface changement de plan -->
+					<p>Choisissez votre mode d'affichage : </p>
+					
+					<div>
+						<input type="radio" id="3D" name="choix-affichage" value="3D" onclick="changeView3D();" checked>
+						<label for="3D">3D</label>
+						<br>
+						<input type="radio" id="2D" name="choix-affichage" value="2D" onclick="changeView2D();">
+						<label for="2D">2D</label>
+					</div>
+
+					<br><br><br>
+					
+					<!--choix de l'affichage couleur-->
+					<div>
+						<input type="radio" id="noir-blanc" name="choix-couleur" value="monochromatique" checked>
+						<label for="noir-blanc">Monochromatique</label>
+						<br>
+						<input type="radio" id="fausses-couleurs" name="choix-couleur" value="couleur">
+						<label for="fausses-couleurs">Fausses couleurs</label>
+					</div>
+					
+					<br><br><br>
+					<!--interface bouton couleur-->
+					<label>Couleur 1 : </label>
+					<input type="color" class="boutonR" value="#FF0000" onclick="setCouleur(1, this.value);">
+					<br>
+					<label>Couleur 2 : </label>  
+					<input type="color" class="boutonV" value="#00FF00" onclick="setCouleur(1, this.value);">
+					<br>
+					<label>Couleur 3 : </label>   
+					<input type="color" class="boutonB" value="#0000FF" onclick="setCouleur(1, this.value);">  
+					<br>
+					<label>Couleur 4 : </label>
+					<input type="color" class="boutonO" value="#FFFF00" onclick="setCouleur(1, this.value);"> 
+					<br>
+					<label>Couleur 5 : </label>
+					<input type="color" class="boutonO" value="#00FFFF" onclick="setCouleur(1, this.value);">
+					
+					
+		
+					<p> Premiere couche = <span id="change-couche"> 360 </span> </p>
+					<input class="slider" type="range" min="0" max="360" step="1" value="360" oninput="setLayer(this.value);">
+				</div>
+			</td>
+		</table>		
 	</body>
 </html>

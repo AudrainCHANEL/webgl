@@ -1,14 +1,14 @@
 /*Pour les sliders*/
-.slidertransparence {
+.interface {
 width: 20%;
 position: absolute;
-top: 0px;
-right: 25%;
+top: 20px;
+left: 60%;
 }
 
 .slider {
 -webkit-appearance: none;
-width: 600px;
+width: 300px;
 height: 5px;
 background: #d3d3d3;
 outline: none;
@@ -35,9 +35,5 @@ width: 20px;
 height: 20px;
 background: #7ce6ee;
 cursor: pointer;
-}
-
-.slider-hidden {
-    display: none!important;
 }
 
