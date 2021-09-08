@@ -1,5 +1,5 @@
 var dernierIndex = 360;
-var nbcouche= 361;
+var nbcouche= 360;
 var premierIndex = 0;
 // =====================================================
 var gl;
@@ -14,10 +14,14 @@ var objMatrix = mat4.create();
 mat4.identity(objMatrix);
 
 var texture = null;
-
 var seuil_inf = 0.9;
-var seuil_sup = 1.0;
-var lut=getLUT();
+var couleur=1;
+
+var lut1 = [1.0, 0.0, 0.0];
+var lut2 = [0.0, 1.0, 0.0];
+var lut3 = [0.0, 0.0, 1.0];
+var lut4 = [1.0, 1.0, 0.0];
+var lut5 = [0.0, 1.0, 1.0];
 
 // =====================================================
 function webGLStart() {
@@ -27,7 +31,6 @@ function webGLStart() {
 	document.onmousemove = handleMouseMove;
 
 	initGL(canvas);
-
 	initBuffers();
 
 	texture = new Array(nbcouche);
@@ -119,7 +122,6 @@ function initTexture(textureFileName, index)
 		gl.activeTexture(gl.TEXTURE0);	}
 }
 
-
 // =====================================================
 function loadShaders(shader) {
 	loadShaderText(shader,'.vs');
@@ -186,14 +188,13 @@ function initShaders(vShaderTxt, fShaderTxt) {
 	shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 
 	shaderProgram.opaciteinf = gl.getUniformLocation(shaderProgram, "uSeuilMin");
-	gl.uniform1f(shaderProgram.opaciteinf, seuil_inf);
-
-	shaderProgram.opacitesup = gl.getUniformLocation(shaderProgram, "uSeuilMax");
-	gl.uniform1f(shaderProgram.opacitesup, seuil_sup);
+	shaderProgram.lut1 = gl.getUniformLocation(shaderProgram, "uLut1");
+	shaderProgram.lut2 = gl.getUniformLocation(shaderProgram, "uLut2");
+	shaderProgram.lut3 = gl.getUniformLocation(shaderProgram, "uLut3");
+	shaderProgram.lut4 = gl.getUniformLocation(shaderProgram, "uLut4");
+	shaderProgram.lut5 = gl.getUniformLocation(shaderProgram, "uLut5");
+	shaderProgram.color = gl.getUniformLocation(shaderProgram, "uCouleur");
 	
-	shaderProgram.lut = gl.getUniformLocation(shaderProgram, "uLUT");
-	gl.uniform3fv(shaderProgram.lut, lut);
-
 	gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 	gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute,
      	vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -210,16 +211,14 @@ function setMatrixUniforms() {
 		gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
 		gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 		gl.uniform1f(shaderProgram.opaciteinf, seuil_inf);
-		gl.uniform1f(shaderProgram.opacitesup, seuil_sup);
+		gl.uniform3fv(shaderProgram.lut1, lut1);
+		gl.uniform3fv(shaderProgram.lut2, lut2);
+		gl.uniform3fv(shaderProgram.lut3, lut3);
+		gl.uniform3fv(shaderProgram.lut4, lut4);
+		gl.uniform3fv(shaderProgram.lut5, lut5);
+		gl.uniform1i(shaderProgram.color, couleur);
 	}
 }
-
-// =====================================================
-function getLUT() {
-	spot = [0.3, 0.5, 0.8];
-	return spot;
-}
-
 
 // =====================================================
 function drawScene() {
