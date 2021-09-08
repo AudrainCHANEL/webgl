@@ -1,7 +1,5 @@
-var dernierIndex = 360;
-var nbcouche= 360;
-var premierIndex = 0;
 // =====================================================
+/*Les variables déjà présentent*/
 var gl;
 var shadersLoaded = 0;
 var vertShaderTxt;
@@ -13,10 +11,17 @@ var pMatrix = mat4.create();
 var objMatrix = mat4.create();
 mat4.identity(objMatrix);
 
+/*Les infos sur le jeu de données*/
+var dernierIndex = 360;
+var nbcouche= 360;
+var premierIndex = 0;
+
+/*Les variables que nous avons rajouté*/
 var texture = null;
 var seuil_inf = 0.9;
 var couleur=1;
 
+/*Les LookUp Table pour les fausses couleurs (valeurs par défaut)*/
 var lut1 = [1.0, 0.0, 0.0];
 var lut2 = [0.0, 1.0, 0.0];
 var lut3 = [0.0, 0.0, 1.0];
@@ -25,19 +30,23 @@ var lut5 = [0.0, 1.0, 1.0];
 
 // =====================================================
 function webGLStart() {
+	/**Point d'entrée de WebGL */
 	var canvas = document.getElementById("WebGL-test");
 	canvas.onmousedown = handleMouseDown;//Les actions possibles et leur réaction
 	document.onmouseup = handleMouseUp;
 	document.onmousemove = handleMouseMove;
 
+	//Initialisation des buffers et du canvas webGL
 	initGL(canvas);
 	initBuffers();
 
+	//Chargement de toutes les textures du jeu de données
 	texture = new Array(nbcouche);
 	for (let index=0 ; index <= (dernierIndex-premierIndex+1) ; index ++) {
 		initTexture('./Scan300/scan'+(premierIndex+index)+'.jpg', index);
 	}
 
+	//Chargement des shaders
 	loadShaders('shader');
 
 	gl.clearColor(0.7, 0.7, 0.7, 1.0); //couleur de remplissage quand l'image est réinitialisée
@@ -65,6 +74,7 @@ function initGL(canvas)
 
 // =====================================================
 function initBuffers() {
+	/**Initialisation d'un carré pouvant contenir une texture, ce carré fait 0,6 unité de large*/
 	// Vertices (array)
 	vertices = [
 		-0.3, -0.3, 0.0,
@@ -104,8 +114,9 @@ function initBuffers() {
 }
 
 // =====================================================
-function initTexture(textureFileName, index)
-{
+function initTexture(textureFileName, index){
+	/**Fonction de chargement d'une texture et envoie à la carte graphique + définition du sampleur*/
+
 	var texImage = new Image();
 	texImage.src = textureFileName;
 
@@ -124,6 +135,7 @@ function initTexture(textureFileName, index)
 
 // =====================================================
 function loadShaders(shader) {
+	/**Pour charger les shaders*/
 	loadShaderText(shader,'.vs');
 	loadShaderText(shader,'.fs');
 }
@@ -147,7 +159,7 @@ function loadShaderText(filename,ext) {   // technique car lecture asynchrone...
 
 // =====================================================
 function initShaders(vShaderTxt, fShaderTxt) {
-
+	/**Initialisation des shaders et des variables que nous enverrons à la carte graphique (uniform et attrib) */
 	vshader = gl.createShader(gl.VERTEX_SHADER);
 	gl.shaderSource(vshader, vShaderTxt);
 	gl.compileShader(vshader);
@@ -187,6 +199,7 @@ function initShaders(vShaderTxt, fShaderTxt) {
 	shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
 	shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 
+	//On rajoute les 5 LUT, le seui; d'affichage, una variable de selection du mode d'affichage (monochrome ou polychrome)
 	shaderProgram.opaciteinf = gl.getUniformLocation(shaderProgram, "uSeuilMin");
 	shaderProgram.lut1 = gl.getUniformLocation(shaderProgram, "uLut1");
 	shaderProgram.lut2 = gl.getUniformLocation(shaderProgram, "uLut2");
@@ -210,18 +223,24 @@ function setMatrixUniforms() {
 	if(shaderProgram != null) {
 		gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
 		gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+		//On envoie le seuil (float)
 		gl.uniform1f(shaderProgram.opaciteinf, seuil_inf);
+		//On envoie les 5 LUT (5* vec3)
 		gl.uniform3fv(shaderProgram.lut1, lut1);
 		gl.uniform3fv(shaderProgram.lut2, lut2);
 		gl.uniform3fv(shaderProgram.lut3, lut3);
 		gl.uniform3fv(shaderProgram.lut4, lut4);
 		gl.uniform3fv(shaderProgram.lut5, lut5);
+		//On envoie le parametre mono/poly-chrome
 		gl.uniform1i(shaderProgram.color, couleur);
 	}
 }
 
 // =====================================================
 function drawScene() {
+	/**Pour afficher tous les quads,
+	 * On va afficher le même quad, mais avec une texture différente et une translation.
+	 */
 	gl.clear(gl.COLOR_BUFFER_BIT);
 
 	espace = 0.6/nbcouche
@@ -231,10 +250,12 @@ function drawScene() {
 			mat4.identity(mvMatrix);
 			mat4.translate(mvMatrix, [0.0, 0.0, -3.0]);
 			mat4.multiply(mvMatrix, objMatrix);
+			//Pour faire la translation et avoir un volume, et pas seulement un plan
 			mat4.translate(mvMatrix, [0.0, 0.0, (index-premierIndex)*espace-0.3])
 
 			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+			//On selectionne le buffer que l'on veut
 			gl.bindTexture(gl.TEXTURE_2D, texture[index]);
 			setMatrixUniforms();
 			gl.drawElements(gl.TRIANGLE_FAN, indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);

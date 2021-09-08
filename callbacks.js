@@ -104,8 +104,29 @@ function changeView3D(){
 }
 
 // =====================================================
-function setCouleur(couleur, inputValue){
+function setCouleur(index, color){
+	newColor = [];
+	newColor.push(parseInt(color.substring(1,3), 16)/255);
+	newColor.push(parseInt(color.substring(3,5), 16)/255);
+	newColor.push(parseInt(color.substring(5), 16)/255);
 
+	switch (index) {
+		case 1 :
+			lut1 = newColor;
+			break;
+		case 2 :
+			lut2 = newColor;
+			break;
+		case 3 :
+			lut3 = newColor;
+			break;
+		case 4 :
+			lut4 = newColor;
+			break;
+		case 5 :
+			lut5 = newColor;
+			break;			
+	}
 }
 
 //=====================================================
